@@ -1,0 +1,9 @@
+version: '3.5'
+
+services:
+
+  tts:
+    build: .
+    container_name: tts-translator
+    ports:
+      - 8080:8080
