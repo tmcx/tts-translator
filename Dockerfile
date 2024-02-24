@@ -18,8 +18,9 @@ RUN apt-get install nodejs -y
 
 # API configuration
 RUN npm install -g typescript
-COPY . .
+COPY package.json package.json
 RUN npm install
+COPY . .
 RUN npm run build
 RUN rm -rf src
 EXPOSE 8080

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+import Joi from 'joi';
 
 export function replaceAll(
   inp: string,
@@ -17,20 +17,12 @@ export function replaceAll(
 export function checkValidation(
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
+  schema: Joi.ObjectSchema<any>
 ) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    const result = errors.array().reduce((prev: any, curr: any) => {
-      const key = curr['path'];
-      if (key in prev && !prev[key].includes(curr.msg)) {
-        prev[key].push(curr.msg);
-      } else {
-        prev[key] = [curr.msg];
-      }
-      return prev;
-    }, {});
-    return res.status(400).json(result);
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json(error.details.map((err) => err.message));
   }
   next();
 }

@@ -1,7 +1,4 @@
-import {
-  TranslatorPostValidation,
-  TTSPostValidation,
-} from './utils/validation';
+import { TranslatePostValidation, TTSPostValidation } from './utils/validation';
 import express, { Request, Response } from 'express';
 import { FileManagerService } from './service/file-manager';
 import { TranslatorService } from './service/translator';
@@ -12,38 +9,33 @@ import { sanitizeFilename } from './utils/functions';
 
 (async () => {
   console.log('Starting...');
-  await ConfigService.start();
   await TranslatorService.start();
   startAPI();
 })();
 
-async function startAPI() {
+function startAPI() {
   const app = express();
   app.use(express.json());
 
-  app.post(
-    '/tts',
-    ...TTSPostValidation(),
-    async (req: Request, res: Response) => {
-      let { text, translate, voice, filename } = req.body;
-      if (translate) {
-        const { from, to } = translate;
-        text = await TranslatorService.translate(text, from, to);
-        console.log('Text translation: Ready.');
-      }
-
-      const { path, uuid } = await TTSService.textToSpeech(text, voice);
-      console.log('TTS: Ready.');
-      filename = sanitizeFilename(filename ?? uuid);
-      res
-        .type(CONTENT_TYPE.MP3)
-        .setHeader(
-          HEADER.CONTENT_DISPOSITION.NAME,
-          HEADER.CONTENT_DISPOSITION.VALUE(filename)
-        )
-        .sendFile(FileManagerService.get(path));
+  app.post('/tts', TTSPostValidation, async (req: Request, res: Response) => {
+    let { text, translate, voice, filename } = req.body;
+    if (translate) {
+      const { from, to } = translate;
+      text = await TranslatorService.translate(text, from, to);
+      console.log('Text translation: Ready.');
     }
-  );
+
+    const { path, uuid } = await TTSService.textToSpeech(text, voice);
+    console.log('TTS: Ready.');
+    filename = sanitizeFilename(filename ?? uuid);
+    res
+      .type(CONTENT_TYPE.MP3)
+      .setHeader(
+        HEADER.CONTENT_DISPOSITION.NAME,
+        HEADER.CONTENT_DISPOSITION.VALUE(filename)
+      )
+      .sendFile(FileManagerService.get(path));
+  });
 
   app.get('/tts/voices', async (_req, res) => {
     res.send(await TTSService.voices());
@@ -51,7 +43,7 @@ async function startAPI() {
 
   app.post(
     '/translate',
-    ...TranslatorPostValidation(),
+    TranslatePostValidation,
     async (req: Request, res: Response) => {
       const { from, to, text } = req.body;
       const result = await TranslatorService.translate(text, from, to);

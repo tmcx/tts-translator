@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "docker:publish":"bash ./publish.sh",
+    "docker:publish": "bash ./publish.sh",
     "start:dev": "tsc && node dist",
     "start": "node dist",
     "build": "tsc"
@@ -14,7 +14,7 @@
   "license": "LGPL-3",
   "dependencies": {
     "express": "^4.18.2",
-    "express-validator": "^7.0.1",
+    "joi": "^17.12.2",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
