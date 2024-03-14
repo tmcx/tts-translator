@@ -1,7 +1,8 @@
-FROM libretranslate/libretranslate:latest
+FROM libretranslate/libretranslate:v1.5.6
 
 
 USER root
+RUN apt-get update -y
 
 # TTS configuration
 RUN mkdir /tts
@@ -12,7 +13,7 @@ ENV PATH="/root/.local/bin:$PATH"
 
 
 # NodeJS configuration
-RUN apt-get update && apt install -y curl
+RUN apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install nodejs -y
 

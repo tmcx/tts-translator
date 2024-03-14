@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
 
-  tts:
+  tts-translator:
     build: .
     container_name: tts-translator
     ports:

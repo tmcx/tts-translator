@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "docker:publish": "bash ./publish.sh",
+    "start:docker": "docker-compose up --build",
+    "publish:docker": "bash ./publish.sh",
     "start:dev": "tsc && node dist",
     "start": "node dist",
     "build": "tsc"
