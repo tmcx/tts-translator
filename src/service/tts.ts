@@ -1,16 +1,18 @@
 import { replaceAll } from '../utils/functions';
 import { CommandService } from './command';
 import { v4 as uuid } from 'uuid';
+import { FileManagerService } from './file-manager';
 
 export class TTSService {
   static async textToSpeech(
     text: string,
     voice?: { name?: string; volume?: number; pitch?: number; rate?: number }
   ) {
-    text = replaceAll(text, '"', "'");
     const id = uuid();
+    const textPath = `/tmp/${id}.txt`;
+    await FileManagerService.create(textPath, text);
     const path = `/tts/${id}.mp3`;
-    let cmd = `edge-tts --text "${text}" --write-media ${path}`;
+    let cmd = `edge-tts --file=${textPath} --write-media ${path}`;
     if (voice?.name) {
       cmd += ` --voice ${voice.name}`;
     }
@@ -24,6 +26,7 @@ export class TTSService {
       cmd += ` --rate=${voice.rate}%`;
     }
     await CommandService.exec(cmd);
+    await FileManagerService.delete(textPath);
     return { uuid: id, path };
   }
 
