@@ -6,7 +6,7 @@ import { CONTENT_TYPE, HEADER } from './utils/constant';
 import { ConfigService } from './service/config';
 import { TTSService } from './service/tts';
 import { sanitizeFilename } from './utils/functions';
-import { v4 as uuid } from 'uuid';
+import uuid from 'short-unique-id';
 
 (async () => {
   console.log('Starting...');
@@ -19,7 +19,7 @@ function startAPI() {
   app.use(express.json());
 
   app.use((req: Request, res: Response, next: NextFunction) => {
-    req.headers['pid'] = uuid();
+    req.headers['pid'] = new uuid().rnd();
     req.headers['date'] = new Date().getSeconds().toString();
     console.log(req.headers['pid'], 'IN ', req.method.padEnd(3, ' '), req.path);
     next();

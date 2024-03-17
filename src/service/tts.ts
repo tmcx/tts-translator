@@ -1,6 +1,6 @@
 import { replaceAll } from '../utils/functions';
 import { CommandService } from './command';
-import { v4 as uuid } from 'uuid';
+import uuid from 'short-unique-id';
 import { FileManagerService } from './file-manager';
 
 export class TTSService {
@@ -8,7 +8,7 @@ export class TTSService {
     text: string,
     voice?: { name?: string; volume?: number; pitch?: number; rate?: number }
   ) {
-    const id = uuid();
+    const id = new uuid().rnd();
     const textPath = `/tmp/${id}.txt`;
     await FileManagerService.create(textPath, text);
     const path = `/tts/${id}.mp3`;
