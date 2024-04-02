@@ -30,15 +30,16 @@ export class HTTPApi {
       '/tts',
       TTSPostValidation,
       async (req: Request, res: Response) => {
+        const pid = req.headers['pid'];
         let { text, translate, voice, filename } = req.body;
         if (translate) {
           const { from, to } = translate;
           text = await TranslatorService.translate(text, from, to);
-          console.log('Text translation: Ready.');
+          console.log(pid, 'Text translation: Ready.');
         }
 
         const { path, uuid } = await TTSService.textToSpeech(text, voice);
-        console.log('TTS: Ready.');
+        console.log(pid, 'TTS: Ready.');
         filename = sanitizeFilename(filename ?? uuid);
         res
           .type(CONTENT_TYPE.MP3)
@@ -82,28 +83,16 @@ export class HTTPApi {
     this.app.use(express.json());
 
     this.app.use((req: Request, res: Response, next: NextFunction) => {
-      req.headers['pid'] = new uuid().rnd();
-      req.headers['date'] = new Date().getSeconds().toString();
-      console.log(
-        req.headers['pid'],
-        'IN ',
-        req.method.padEnd(3, ' '),
-        req.path
-      );
+      req.headers['pid'] = 'PID: ' + new uuid().rnd();
+      const startDate = new Date().getTime() / 1000;
+      const { pid } = req.headers;
+      console.log(pid, 'IN ', req.method.padEnd(3, ' '), req.path);
       next();
 
       res.once('finish', () => {
-        const duration =
-          Math.round(
-            (new Date().getSeconds() - +(req.headers['date'] ?? 0)) * 100
-          ) / 100;
-        console.log(
-          req.headers['pid'],
-          'OUT',
-          req.method.padEnd(3, ' '),
-          req.path,
-          duration + 's'
-        );
+        const endDate = new Date().getTime() / 1000;
+        const duration = (endDate - startDate).toFixed(2) + 's';
+        console.log(pid, 'OUT', req.method.padEnd(3, ' '), req.path, duration);
       });
     });
   }
