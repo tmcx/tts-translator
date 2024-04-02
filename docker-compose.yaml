@@ -7,3 +7,5 @@ services:
     container_name: tts-translator
     ports:
       - 8080:8080
+    environment:
+      - ENABLE_CORS=true

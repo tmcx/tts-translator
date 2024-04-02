@@ -10,12 +10,17 @@ import { ConfigService } from '../service/config';
 import { TTSService } from '../service/tts';
 import uuid from 'short-unique-id';
 import { TranslatorService } from './translator';
+import cors from 'cors';
 
 export class HTTPApi {
   static app: Express;
 
   static start() {
     this.app = express();
+    const enableCors = ConfigService.getEnv('ENABLE_CORS');
+    if (enableCors) {
+      this.app.use(cors());
+    }
     this.loadMiddlewares();
     this.loadRoutes();
   }
@@ -59,17 +64,14 @@ export class HTTPApi {
       }
     );
 
-    this.app.get(
-      '/translate/languages',
-      async (_: Request, res: Response) => {
-        const languages = ConfigService.getArrayEnv('LT_LOAD_ONLY').map(
-          (name) => ({
-            name,
-          })
-        );
-        res.send(languages);
-      }
-    );
+    this.app.get('/translate/languages', async (_: Request, res: Response) => {
+      const languages = ConfigService.getArrayEnv('LT_LOAD_ONLY').map(
+        (name) => ({
+          name,
+        })
+      );
+      res.send(languages);
+    });
 
     this.app.listen(ConfigService.API_PORT, '0.0.0.0', () => {
       console.log(`Ready. Listening on port ${ConfigService.API_PORT}.`);

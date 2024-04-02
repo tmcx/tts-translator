@@ -5,6 +5,10 @@ export class ConfigService {
     return process.env[name] ?? '';
   }
 
+  static getBoolEnv(name: string) {
+    return !!JSON.parse(process.env[name] ?? '');
+  }
+
   static getArrayEnv(name: string) {
     return (process.env[name] ?? '').split(',');
   }
