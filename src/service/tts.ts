@@ -25,7 +25,15 @@ export class TTSService {
     if (voice?.rate) {
       cmd += ` --rate=${voice.rate}%`;
     }
-    await CommandService.exec(cmd);
+    let attempt = 0;
+    do {
+      await CommandService.exec(cmd)
+        .catch((e) => {
+          attempt++;
+          console.error(TTSService.name, e);
+        })
+        .then(() => (attempt = 3));
+    } while (attempt < 3);
     await FileManagerService.delete(textPath);
     return { uuid: id, path };
   }
