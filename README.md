@@ -6,8 +6,13 @@
 TTS-Translator is a Docker image that contains an API for translating text and converting text to speech. It also provides the functionality to combine both actions to provide text-to-speech translation.
 
 ## Environment Variables
-- **LT_LOAD_ONLY**: Defines the languages to be installed. Example: `"en,es"`
-- **API_PORT**: Defines the port of the API. Example: `"8080"`
+- **LT_LOAD_ONLY**: Defines the languages to be installed.
+    - **Default:** `"en,es"`.
+    - **Available:** sq(Albanian), de(German), ar(Arabic), az(Azerbaijani), bn(Bengali), bg(Bulgarian), ca(Catalan), zh(Chinese), zt(Chinese (traditional)), cs(Czech), da(Danish), nl(Dutch), en(English), eo(Esperanto), et(Estonian), fi(Finnish), fr(French), el(Greek), he(Hebrew), hi(Hindi), hu(Hungarian), id(Indonesian), ga(Irish), it(Italian), ja(Japanese), ko(Korean), lv(Latvian), lt(Lithuanian), ms(Malay), nb(Norwegian), fa(Persian), pl(Polish), pt(Portuguese), ro(Romanian), ru(Russian), sr(Serbian), sk(Slovak), sl(Slovenian), es(Spanish), sv(Swedish), tl(Tagalog), th(Thai), tr(Turkish), uk(Ukrainian), ur(Urdu), vi(Vietnamese).
+    - **All unselected languages ​​will not work in the API.**
+
+- **API_PORT**: Defines the port of the API.
+    - **Default:** `"8080"`
 
 ## Features
 - Text translation.
